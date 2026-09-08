@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+
+# NOTE: intentionally NOT ignoring config.py — carries hardcoded secrets on
+# purpose for this vulnerable-by-design demo repo.

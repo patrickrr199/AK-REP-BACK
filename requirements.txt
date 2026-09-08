@@ -1,0 +1,11 @@
+# VULN: vulnerable-dependencies — versions below are old and carry known CVEs
+# (kept old on purpose so Aikido's SCA scanner has something to find).
+fastapi==0.68.0
+uvicorn==0.15.0
+psycopg2-binary==2.9.9
+requests==2.19.1
+urllib3==1.23
+PyYAML==5.1
+Jinja2==2.10.1
+PyJWT==1.7.1
+python-multipart==0.0.5

@@ -1,0 +1,5 @@
+app_name: marketplace-demo
+debug: true
+feature_flags:
+  new_checkout: true
+  admin_panel: true

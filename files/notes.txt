@@ -1,0 +1,2 @@
+This is a sample downloadable file used to demo the /download path-traversal
+vulnerability (routes_utils.py). Try: GET /download?file=../config.py
