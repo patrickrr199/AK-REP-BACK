@@ -27,8 +27,10 @@ def list_orders(status: str = ""):
     cur = conn.cursor()
     query = "SELECT id, buyer_id, product_id, quantity, status, created_at FROM orders"
     if status:
-        query += f" WHERE status = '{status}'"
-    cur.execute(query)
+        query += " WHERE status = %s"
+        cur.execute(query, (status,))
+    else:
+        cur.execute(query)
     rows = cur.fetchall()
     cur.close()
     conn.close()
