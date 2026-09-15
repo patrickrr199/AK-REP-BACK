@@ -1,0 +1,12 @@
+{
+  "name": "aikido-scanner-validation",
+  "version": "1.0.0",
+  "description": "TEST FILE - Security scanner validation only. DO NOT use in production.",
+  "main": "app.js",
+  "dependencies": {
+    "express": "4.16.0",
+    "lodash": "4.17.4",
+    "axios": "0.18.0",
+    "node-serialize": "0.0.4"
+  }
+}
