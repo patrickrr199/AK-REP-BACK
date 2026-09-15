@@ -2,13 +2,16 @@
 // Purpose: Trigger Aikido SAST scanner with SQL injection and XSS patterns.
 
 const express = require('express');
+const helmet = require('helmet');
 const app = express();
+
+app.use(helmet());
 
 // SAST trigger #1: SQL injection via string concatenation
 app.get('/user', (req, res) => {
   const userId = req.query.id;
-  const query = 'SELECT * FROM users WHERE id = ' + userId;
-  // db.execute(query) — intentionally unsafe, for scanner validation only
+  const query = 'SELECT * FROM users WHERE id = ?';
+  // db.execute(query, [userId]) — intentionally unsafe, for scanner validation only
   res.send('Query: ' + query);
 });
 
