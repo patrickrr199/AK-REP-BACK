@@ -1,0 +1,37 @@
+name: Aikido Release Gate
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:      # te permite dispararlo a mano
+
+jobs:
+  security-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Aikido CLI
+        run: npm install -g @aikidosec/ci-api-client
+
+      - name: Release Gate
+        env:
+          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+        run: |
+          aikido-api-client scan-release "NombreExactoDelRepo" "${{ github.sha }}" \
+            --apikey "$AIKIDO_API_KEY" \
+            --fail-on-sast-scan \
+            --fail-on-iac-scan \
+            --fail-on-secrets-scan \
+            --minimum-severity-level "HIGH" \
+            --json
+
+  deploy:
+    needs: security-gate      # <-- esto hace el bloqueo
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Aquí iría tu despliegue real"
