@@ -11,8 +11,8 @@ def list_products(q: str = ""):
     cur = conn.cursor()
     # VULN: sql-injection — search term concatenated straight into a LIKE clause,
     # e.g. q = "' UNION SELECT email,password,... FROM users -- " leaks user data.
-    query = f"SELECT id, title, description, price, stock, seller_id FROM products WHERE title LIKE '%{q}%'"
-    cur.execute(query)
+    query = "SELECT id, title, description, price, stock, seller_id FROM products WHERE title LIKE %s"
+    cur.execute(query, (f"%{q}%",))
     rows = cur.fetchall()
     cur.close()
     conn.close()
