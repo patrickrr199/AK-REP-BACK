@@ -15,15 +15,20 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Verificar token
+        env:
+          AIKIDO_KEY: ${{ secrets.AIKIDO_API_KEY }}
+        run: echo "Longitud del token - ${#AIKIDO_KEY}"
+
       - name: Instalar Aikido CLI
         run: npm install -g @aikidosec/ci-api-client
 
       - name: Gate de codigo
         env:
-          AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
+          AIKIDO_KEY: ${{ secrets.AIKIDO_API_KEY }}
         run: |
           aikido-api-client scan-release "AK-REP-BACK" "${{ github.sha }}" \
-            --apikey "$AIKIDO_API_KEY" \
+            --apikey "$AIKIDO_KEY" \
             --fail-on-sast-scan \
             --fail-on-iac-scan \
             --fail-on-secrets-scan \
@@ -35,17 +40,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verificar token
+        env:
+          AIKIDO_KEY: ${{ secrets.AIKIDO_API_KEY }}
+        run: echo "Longitud del token - ${#AIKIDO_KEY}"
+
       - name: Construir imagen
         run: docker build -t ak-rep-back:${{ github.sha }} .
 
       - name: Gate de contenedor
         env:
-          AIKIDO_IMAGE_KEY: ${{ secrets.AIKIDO_API_KEY  }}
+          AIKIDO_KEY: ${{ secrets.AIKIDO_API_KEY }}
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
             aikidosecurity/local-scanner \
             image-scan ak-rep-back:${{ github.sha }} \
-            --apikey "$AIKIDO_IMAGE_KEY" \
+            --apikey "$AIKIDO_KEY" \
             --fail-on critical
 
   deploy:
