@@ -40,7 +40,7 @@ jobs:
 
       - name: Gate de contenedor
         env:
-          AIKIDO_IMAGE_KEY: ${{ secrets.AIKIDO_IMAGE_KEY }}
+          AIKIDO_IMAGE_KEY: ${{ secrets.AIKIDO_API_KEY  }}
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
             aikidosecurity/local-scanner \
