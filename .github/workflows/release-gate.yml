@@ -1,9 +1,9 @@
-name: Aikido Release Gate
+name: Aikido Gates
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:      # te permite dispararlo a mano
+  workflow_dispatch:
 
 jobs:
   security-gate:
@@ -18,7 +18,7 @@ jobs:
       - name: Instalar Aikido CLI
         run: npm install -g @aikidosec/ci-api-client
 
-      - name: Release Gate
+      - name: Gate de codigo
         env:
           AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
         run: |
@@ -30,8 +30,26 @@ jobs:
             --minimum-severity-level "HIGH" \
             --json
 
-  deploy:
-    needs: security-gate      # <-- esto hace el bloqueo
+  container-gate:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Aquí iría tu despliegue real"
+      - uses: actions/checkout@v4
+
+      - name: Construir imagen
+        run: docker build -t ak-rep-back:${{ github.sha }} .
+
+      - name: Gate de contenedor
+        env:
+          AIKIDO_IMAGE_KEY: ${{ secrets.AIKIDO_IMAGE_KEY }}
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aikidosecurity/local-scanner \
+            image-scan ak-rep-back:${{ github.sha }} \
+            --apikey "$AIKIDO_IMAGE_KEY" \
+            --fail-on critical
+
+  deploy:
+    needs: [security-gate, container-gate]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Aqui iria tu despliegue real"
