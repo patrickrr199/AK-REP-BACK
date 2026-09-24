@@ -22,7 +22,7 @@ jobs:
         env:
           AIKIDO_API_KEY: ${{ secrets.AIKIDO_API_KEY }}
         run: |
-          aikido-api-client scan-release "NombreExactoDelRepo" "${{ github.sha }}" \
+          aikido-api-client scan-release "AK-REP-BACK" "${{ github.sha }}" \
             --apikey "$AIKIDO_API_KEY" \
             --fail-on-sast-scan \
             --fail-on-iac-scan \
