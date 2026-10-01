@@ -15,8 +15,8 @@ async def register(request: Request):
     conn = get_connection()
     cur = conn.cursor()
     # VULN: sql-injection — user input concatenated directly into the query
-    query = f"INSERT INTO users (email, password, role) VALUES ('{email}', '{password}', 'customer') RETURNING id"
-    cur.execute(query)
+    query = "INSERT INTO users (email, password, role) VALUES (%s, %s, 'customer') RETURNING id"
+    cur.execute(query, (email, password))
     user_id = cur.fetchone()[0]
     conn.commit()
     cur.close()
@@ -34,8 +34,8 @@ async def login(request: Request):
     cur = conn.cursor()
     # VULN: sql-injection — classic auth-bypassable query built with an f-string,
     # e.g. email = "admin@example.com' -- " bypasses the password check entirely.
-    query = f"SELECT id, email, role FROM users WHERE email='{email}' AND password='{password}'"
-    cur.execute(query)
+    query = "SELECT id, email, role FROM users WHERE email=%s AND password=%s"
+    cur.execute(query, (email, password))
     row = cur.fetchone()
     cur.close()
     conn.close()
