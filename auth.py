@@ -17,6 +17,6 @@ def create_token(user_id: int, role: str) -> str:
 # be accepted as-is, including tokens signed with "alg": "none".
 def decode_token(token: str) -> dict:
     try:
-        return jwt.decode(token, options={"verify_signature": False})
+        return jwt.decode(token)
     except Exception:
         return {}
