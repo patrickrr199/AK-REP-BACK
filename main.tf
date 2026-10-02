@@ -20,6 +20,15 @@ resource "aws_s3_bucket" "test_bucket" {
   acl    = "public-read"
 }
 
+resource "aws_s3_bucket_public_access_block" "test_bucket" {
+  bucket = aws_s3_bucket.test_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 # IaC trigger 2: Security group with SSH open to the world
 resource "aws_security_group" "test_sg" {
   name        = "aikido-iac-test-sg"
