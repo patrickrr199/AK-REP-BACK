@@ -2,9 +2,11 @@
 // SQL injection and XSS patterns included intentionally. DO NOT USE IN PRODUCTION.
 
 const express = require('express');
+const helmet = require('helmet');
 const { Client } = require('pg');
 
 const app = express();
+app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 
 const db = new Client({ connectionString: 'postgresql://localhost/test' });
