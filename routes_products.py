@@ -11,8 +11,8 @@ def list_products(q: str = ""):
     cur = conn.cursor()
     # VULN: sql-injection — search term concatenated straight into a LIKE clause,
     # e.g. q = "' UNION SELECT email,password,... FROM users -- " leaks user data.
-    query = f"SELECT id, title, description, price, stock, seller_id FROM products WHERE title LIKE '%{q}%'"
-    cur.execute(query)
+    query = "SELECT id, title, description, price, stock, seller_id FROM products WHERE title LIKE %s"
+    cur.execute(query, (f'%{q}%',))
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -59,8 +59,8 @@ async def add_comment(product_id: int, request: Request):
     # VULN: sql-injection — comment body concatenated directly into the INSERT,
     # which also doubles as a stored-XSS injection point since it is later
     # rendered unsanitized on the frontend.
-    query = f"INSERT INTO comments (product_id, author_id, body) VALUES ({product_id}, {author_id}, '{text}') RETURNING id"
-    cur.execute(query)
+    query = "INSERT INTO comments (product_id, author_id, body) VALUES (%s, %s, %s) RETURNING id"
+    cur.execute(query, (product_id, author_id, text))
     comment_id = cur.fetchone()[0]
     conn.commit()
     cur.close()
